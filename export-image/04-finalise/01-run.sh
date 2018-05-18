@@ -86,6 +86,13 @@ echo "net.ipv4.ip_forward=1" >> "${ROOTFS_DIR}/etc/sysctl.conf"
 echo "kernel.sysrq=0" >> "${ROOTFS_DIR}/etc/sysctl.conf"
 echo "fs.protected_hardlinks=1" >> "${ROOTFS_DIR}/etc/sysctl.conf"
 echo "fs.protected_symlinks=1" >> "${ROOTFS_DIR}/etc/sysctl.conf"
+echo "net.ipv6.conf.all.disable_ipv6 = 1" >> "${ROOTFS_DIR}/etc/sysctl.conf"
+echo "net.ipv6.conf.default.disable_ipv6 = 1" >> "${ROOTFS_DIR}/etc/sysctl.conf"
+
+
+
+
+
 
 echo 'DAEMON_CONF="/etc/hostapd/hostapd.conf"' >> "${ROOTFS_DIR}/etc/default/hostapd"
 
