@@ -1,0 +1,7 @@
+wpasupplicant wireless-tools firmware-atheros firmware-brcm80211 firmware-libertas firmware-misc-nonfree firmware-realtek
+raspberrypi-net-mods
+net-tools
+iptables
+fail2ban
+dnsmasq
+hostapd

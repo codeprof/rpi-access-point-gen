@@ -1,0 +1,1 @@
+@reboot /bin/sync && /sbin/shutdown -r 03:59

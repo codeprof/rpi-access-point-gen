@@ -1,0 +1,5 @@
+fstab
+readonly: ro
+
+SELinux
+
