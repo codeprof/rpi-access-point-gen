@@ -8,8 +8,8 @@ on_chroot << EOF
 hardlink -t /usr/share/doc
 EOF
 
-if [ -d "${ROOTFS_DIR}/home/pi/.config" ]; then
-	chmod 700 "${ROOTFS_DIR}/home/pi/.config"
+if [ -d "${ROOTFS_DIR}/home/master/.config" ]; then
+	chmod 700 "${ROOTFS_DIR}/home/master/.config"
 fi
 
 rm -f "${ROOTFS_DIR}/etc/apt/apt.conf.d/51cache"
@@ -42,11 +42,8 @@ rm -f "${ROOTFS_DIR}/root/.vnc/private.key"
 rm -f "${ROOTFS_DIR}/etc/vnc/updateid"
 
 update_issue "$(basename "${EXPORT_DIR}")"
-install -m 644 "${ROOTFS_DIR}/etc/rpi-issue" "${ROOTFS_DIR}/boot/issue.txt"
+install -m 640 "${ROOTFS_DIR}/etc/rpi-issue" "${ROOTFS_DIR}/boot/issue.txt"
 install files/LICENSE.oracle "${ROOTFS_DIR}/boot/"
-
-
-
 
 
 rm -f "${ROOTFS_DIR}/boot/config.txt"
@@ -60,6 +57,7 @@ rm -f "${ROOTFS_DIR}/boot/bcm2708-rpi-b-plus.dtb"
 rm -f "${ROOTFS_DIR}/boot/bcm2708-rpi-b.dtb"
 rm -f "${ROOTFS_DIR}/boot/bcm2708-rpi-0-w.dtb"
 rm -f "${ROOTFS_DIR}/boot/kernel.img"
+rm -f "${ROOTFS_DIR}/boot/overlays/*"
 
 
 rm -f "${ROOTFS_DIR}/etc/sudoers.d/*nopasswd"
@@ -72,20 +70,46 @@ mkdir -p "${ROOTFS_DIR}/etc/wpa_supplicant"
 mkdir -p "${ROOTFS_DIR}/etc/modprobe.d"
 mkdir -p "${ROOTFS_DIR}/etc/systemd"
 
+chmod 644 /etc/passwd
+chown root:root /etc/passwd
+chmod 644 /etc/group
+chown root:root /etc/group
+chmod 600 /etc/shadow
+chown root:root /etc/shadow
+chmod 600 /etc/gshadow
+chown root:root /etc/gshadow
 
 install -m 600 files/reboot "${ROOTFS_DIR}/etc/cron.d/reboot"
+
 install -m 600 files/sudoers "${ROOTFS_DIR}/etc/sudoers"
-install -m 600 files/hostapd.conf "${ROOTFS_DIR}/etc/hostapd/hostapd.conf"
-install -m 644 files/dhcpcd.conf "${ROOTFS_DIR}/etc/dhcpcd.conf"
+install -m 640 files/hostapd.conf "${ROOTFS_DIR}/etc/hostapd/hostapd.conf"
+install -m 640 files/dhcpcd.conf "${ROOTFS_DIR}/etc/dhcpcd.conf"
 install -m 600 files/wpa_supplicant.conf "${ROOTFS_DIR}/etc/wpa_supplicant/wpa_supplicant.conf"
-install -m 644 files/iptables.ipv4.nat "${ROOTFS_DIR}/etc/iptables.ipv4.nat"
-install -m 744 files/rc.local "${ROOTFS_DIR}/etc/rc.local"
-install -m 644 files/interfaces "${ROOTFS_DIR}/etc/network/interfaces"
-install -m 600 files/dnsmasq.conf "${ROOTFS_DIR}/etc/dnsmasq.conf"
-install -m 644 files/sshd_config "${ROOTFS_DIR}/etc/ssh/sshd_config"
-install -m 644 files/ntp.conf "${ROOTFS_DIR}/etc/ntp.conf"
-install -m 644 files/blacklist.conf "${ROOTFS_DIR}/etc/modprobe.d/blacklist.conf"
-install -m 644 files/journald.conf "${ROOTFS_DIR}/etc/systemd/journald.conf"
+install -m 640 files/iptables.ipv4.nat "${ROOTFS_DIR}/etc/iptables.ipv4.nat"
+install -m 640 files/rc.local "${ROOTFS_DIR}/etc/rc.local"
+install -m 640 files/interfaces "${ROOTFS_DIR}/etc/network/interfaces"
+install -m 640 files/dnsmasq.conf "${ROOTFS_DIR}/etc/dnsmasq.conf"
+install -m 600 files/sshd_config "${ROOTFS_DIR}/etc/ssh/sshd_config"
+install -m 640 files/ntp.conf "${ROOTFS_DIR}/etc/ntp.conf"
+install -m 640 files/blacklist.conf "${ROOTFS_DIR}/etc/modprobe.d/blacklist.conf"
+install -m 640 files/journald.conf "${ROOTFS_DIR}/etc/systemd/journald.conf"
+
+chown root:root "${ROOTFS_DIR}/etc/ssh/sshd_config"
+
+chown root:root "${ROOTFS_DIR}/etc/crontab"
+chmod og-rwx "${ROOTFS_DIR}/etc/crontab"
+chown root:root "${ROOTFS_DIR}/etc/cron.hourly"
+chmod og-rwx "${ROOTFS_DIR}/etc/cron.hourly"
+chown root:root "${ROOTFS_DIR}/etc/cron.daily"
+chmod og-rwx "${ROOTFS_DIR}/etc/cron.daily"
+chown root:root "${ROOTFS_DIR}/etc/cron.weekly"
+chmod og-rwx "${ROOTFS_DIR}/etc/cron.weekly"
+chown root:root "${ROOTFS_DIR}/etc/cron.monthly"
+chmod og-rwx "${ROOTFS_DIR}/etc/cron.monthly"
+chown root:root "${ROOTFS_DIR}/etc/cron.d"
+chmod og-rwx "${ROOTFS_DIR}/etc/cron.d"
+chown root:root "${ROOTFS_DIR}/etc/cron.d/reboot"
+chmod og-rwx "${ROOTFS_DIR}/etc/cron.d/reboot"
 
 echo "net.ipv4.ip_forward=1" >> "${ROOTFS_DIR}/etc/sysctl.conf"
 echo "kernel.sysrq=0" >> "${ROOTFS_DIR}/etc/sysctl.conf"
@@ -93,20 +117,30 @@ echo "fs.protected_hardlinks=1" >> "${ROOTFS_DIR}/etc/sysctl.conf"
 echo "fs.protected_symlinks=1" >> "${ROOTFS_DIR}/etc/sysctl.conf"
 echo "net.ipv6.conf.all.disable_ipv6 = 1" >> "${ROOTFS_DIR}/etc/sysctl.conf"
 echo "net.ipv6.conf.default.disable_ipv6 = 1" >> "${ROOTFS_DIR}/etc/sysctl.conf"
+echo "net.ipv4.icmp_ignore_bogus_error_responses = 1" >> "${ROOTFS_DIR}/etc/sysctl.conf"
+echo "kernel.randomize_va_space=2" >> "${ROOTFS_DIR}/etc/sysctl.conf"
+echo "kernel.exec-shield=1" >> "${ROOTFS_DIR}/etc/sysctl.conf"
+echo "fs.suid_dumpable=0" >> "${ROOTFS_DIR}/etc/sysctl.conf"
+
+echo "net.ipv4.conf.all.accept_redirects=0" >> "${ROOTFS_DIR}/etc/sysctl.conf"
+echo "net.ipv4.conf.default.accept_redirects=0" >> "${ROOTFS_DIR}/etc/sysctl.conf"
+echo "net.ipv4.conf.all.send_redirects=0" >> "${ROOTFS_DIR}/etc/sysctl.conf"
+echo "net.ipv4.conf.default.send_redirects=0" >> "${ROOTFS_DIR}/etc/sysctl.conf"
+
+
+echo "* hard core 0" >> "${ROOTFS_DIR}/etc/security/limits.conf"
 
 echo 'DAEMON_CONF="/etc/hostapd/hostapd.conf"' >> "${ROOTFS_DIR}/etc/default/hostapd"
 
+find -L "${ROOTFS_DIR}/bin" -type f -exec chmod o-rwx {} +
+find -L "${ROOTFS_DIR}/sbin" -type f -exec chmod o-rwx {} +
+find -L "${ROOTFS_DIR}/usr" -type f -exec chmod o-rwx {} +
+find -L "${ROOTFS_DIR}/etc" -type f -exec chmod o-rwx {} +
 
-
-
-
-
-
-
-
-
-
-
+chmod o+x "${ROOTFS_DIR}/bin/bash"
+chmod o+x "${ROOTFS_DIR}/bin/su"
+chmod o+x "${ROOTFS_DIR}/bin/ls"
+#setfacl -m u:master:x "${ROOTFS_DIR}/bin/su"
 
 
 cp "$ROOTFS_DIR/etc/rpi-issue" "$INFO_FILE"

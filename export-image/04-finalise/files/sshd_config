@@ -14,7 +14,10 @@ Port 22
 Protocol 2
 PermitRootLogin no
 AllowUsers master
-
+PermitEmptyPasswords no
+HostbasedAuthentication no
+IgnoreRhosts yes
+X11Forwarding no
 
 #AddressFamily any
 ListenAddress 192.168.4.1
@@ -38,6 +41,8 @@ ListenAddress 192.168.4.1
 StrictModes yes
 MaxAuthTries 3
 #MaxSessions 10
+
+Ciphers aes128-ctr,aes192-ctr,aes256-ctr
 
 #PubkeyAuthentication yes
 

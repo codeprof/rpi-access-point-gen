@@ -19,6 +19,9 @@
 
 #dhclient wlan1
 
+modprobe -r btbcm
+modprobe -r hci_uart
+
 iptables-restore < /etc/iptables.ipv4.nat
 
 exit 0

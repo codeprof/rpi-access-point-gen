@@ -3,13 +3,13 @@
 #install -m 755 files/resize2fs_once	"${ROOTFS_DIR}/etc/init.d/"
 
 install -d				"${ROOTFS_DIR}/etc/systemd/system/rc-local.service.d"
-install -m 644 files/ttyoutput.conf	"${ROOTFS_DIR}/etc/systemd/system/rc-local.service.d/"
+install -m 640 files/ttyoutput.conf	"${ROOTFS_DIR}/etc/systemd/system/rc-local.service.d/"
 
-install -m 644 files/50raspi		"${ROOTFS_DIR}/etc/apt/apt.conf.d/"
+install -m 640 files/50raspi		"${ROOTFS_DIR}/etc/apt/apt.conf.d/"
 
-install -m 644 files/console-setup   	"${ROOTFS_DIR}/etc/default/"
+install -m 640 files/console-setup   	"${ROOTFS_DIR}/etc/default/"
 
-install -m 755 files/rc.local		"${ROOTFS_DIR}/etc/"
+install -m 750 files/rc.local		"${ROOTFS_DIR}/etc/"
 
 on_chroot << EOF
 systemctl disable hwclock.sh
