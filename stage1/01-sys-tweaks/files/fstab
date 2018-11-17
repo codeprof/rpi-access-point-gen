@@ -1,6 +1,6 @@
 proc            /proc           proc    defaults          0       0
 BOOTDEV  /boot           vfat    defaults,umask=077,nodev,nosuid          0       2
 ROOTDEV  /               ext4    defaults,nodiratime,noatime,commit=600  0       1
-tmpfs           /var/log        tmpfs   nodev,nosuid,size=100M,noexec          0 0
-tmpfs           /var/tmp        tmpfs   nodev,size=100M         0 0
-tmpfs           /tmp            tmpfs   nodev,size=200M          0 0  
+ramfs           /var/log        ramfs   nodev,nosuid,size=100M,noexec          0 0
+ramfs           /var/tmp        ramfs   nodev,size=100M         0 0
+ramfs           /tmp            ramfs   nodev,size=200M          0 0  
